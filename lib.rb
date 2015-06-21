@@ -6,8 +6,8 @@ class BeginsHouse
     @client = client
   end
 
-  # LATENCY = 0.04
-  LATENCY = 1
+  LATENCY = 0.04
+  TRANSITION_IN_SECONDS = 20
 
   def random_lights
     loop do
@@ -29,10 +29,12 @@ class BeginsHouse
     end
   end
 
+
   def color_loop
     client.lights.each do |light|
       p result = light.set_state(
-        :effect => "colorloop",
+        {:effect => "colorloop"},
+        TRANSITION_IN_SECONDS * 10
       )
     end
   end
