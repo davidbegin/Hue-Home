@@ -6,14 +6,15 @@ class BeginsHouse
     @client = client
   end
 
-  LATENCY = 0.04
+  # LATENCY = 0.04
+  LATENCY = 1
 
   def random_lights
     loop do
       client.lights.each do |light|
         result = light.set_state(
           :hue => random_hue,
-          :color_temperature => random_temp
+          :color_temperature => random_temp,
         )
 
         sleep LATENCY
@@ -21,9 +22,18 @@ class BeginsHouse
         if result.map(&:keys).uniq.first.first == "success"
           puts "#{light.name} successfully changed!".green
         else
+          puts result
           puts "#{light.name} unsuccessfully changed :(".red
         end
       end
+    end
+  end
+
+  def color_loop
+    client.lights.each do |light|
+      p result = light.set_state(
+        :effect => "colorloop",
+      )
     end
   end
 
@@ -57,4 +67,5 @@ end
 client = Hue::Client.new
 begins_house = BeginsHouse.new(client)
 # begins_house.toggle_lights
-begins_house.random_lights
+# begins_house.random_lights
+begins_house.color_loop
