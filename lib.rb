@@ -7,7 +7,7 @@ class BeginsHouse
   end
 
   LATENCY = 0.04
-  TRANSITION_IN_SECONDS = 20
+  TRANSISTION_IN_SECONDS = 60
 
   def random_lights
     loop do
@@ -32,8 +32,11 @@ class BeginsHouse
   def color_loop
     client.lights.each do |light|
       p result = light.set_state(
-        {:effect => "colorloop"},
-        TRANSITION_IN_SECONDS * 10
+        {
+          :brightness => Hue::Light::BRIGHTNESS_RANGE.last,
+          :effect => "colorloop"
+        },
+        TRANSISTION_IN_SECONDS * 10
       )
     end
   end
@@ -100,4 +103,4 @@ begins_house = BeginsHouse.new(client)
 # begins_house.toggle_lights
 # begins_house.random_lights
 # begins_house.color_loop
-begins_house.super_crazy
+# begins_house.super_crazy
