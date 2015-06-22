@@ -29,7 +29,6 @@ class BeginsHouse
     end
   end
 
-
   def color_loop
     client.lights.each do |light|
       p result = light.set_state(
@@ -53,6 +52,36 @@ class BeginsHouse
     end
   end
 
+  def super_crazy
+    loop do
+      client.lights.each do |light|
+        next if Random.rand(1..2).even?
+
+        puts "turnings lights off!".red
+        light.off!
+      end
+
+      client.lights.each do |light|
+        puts "turnings lights off!".red
+        light.on!
+        result = light.set_state(
+          :hue => [100, 46920, 45000].sample,
+          :color_temperature => Hue::Light::COLOR_TEMPERATURE_RANGE.last,
+          :brightness => Hue::Light::BRIGHTNESS_RANGE.last
+        )
+
+        sleep LATENCY
+
+        if result.map(&:keys).uniq.first.first == "success"
+          puts "#{light.name} successfully changed!".green
+        else
+          puts result
+          puts "#{light.name} unsuccessfully changed :(".red
+        end
+      end
+    end
+  end
+
   private
 
   attr_reader :client
@@ -70,4 +99,5 @@ client = Hue::Client.new
 begins_house = BeginsHouse.new(client)
 # begins_house.toggle_lights
 # begins_house.random_lights
-begins_house.color_loop
+# begins_house.color_loop
+begins_house.super_crazy
