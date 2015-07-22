@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'bundler/setup'
+
 require "hue"
 require "colorize"
 
@@ -58,7 +61,7 @@ class BeginsHouse
   def super_crazy
     loop do
       client.lights.each do |light|
-        next if Random.rand(1..2).even?
+        next if Random.rand(1..4) == 4
 
         puts "turnings lights off!".red
         light.off!
@@ -85,6 +88,24 @@ class BeginsHouse
     end
   end
 
+  def midnight
+    loop do
+      light =  client.lights.sample
+
+      p result = light.set_state(
+        {
+        :hue => Random.rand(Hue::Light::HUE_RANGE),
+        :brightness => Hue::Light::BRIGHTNESS_RANGE.last
+        }, 10 * 10
+      )
+
+      light.on!
+      sleep 1
+
+      light.off!
+    end
+  end
+
   private
 
   attr_reader :client
@@ -99,8 +120,39 @@ class BeginsHouse
 end
 
 client = Hue::Client.new
+# book_shelf_orb = client.lights.find {|light| light.id == "2" }
+# corner = client.lights.find {|light| light.id == "4" }
+# book_shelf_orb.on!
+# corner.on!
+
+# loop do
+#   p result = book_shelf_orb.set_state(
+#     :hue => Random.rand(Hue::Light::HUE_RANGE),
+#     :brightness => Hue::Light::BRIGHTNESS_RANGE.last
+#     # :brightness => Random.rand(Hue::Light::BRIGHTNESS_RANGE)
+#   )
+#     # :color_temperature => Random.rand(Hue::Light::COLOR_TEMPERATURE_RANGE),
+#
+#   sleep 0.25
+#   # sleep 0.04
+#   # p result = corner.set_state(
+#   #   :hue => Random.rand(Hue::Light::HUE_RANGE),
+#   #   :brightness => Hue::Light::BRIGHTNESS_RANGE.last
+#   #   # :brightness => Random.rand(Hue::Light::BRIGHTNESS_RANGE)
+#   # )
+#   #   # :color_temperature => Random.rand(Hue::Light::COLOR_TEMPERATURE_RANGE),
+#   #
+#   # sleep 0.5
+#   # sleep 0.04
+# end
+
+
+
+
 begins_house = BeginsHouse.new(client)
+# require 'pry'; binding.pry; 1
+# begins_house.midnight
 # begins_house.toggle_lights
 # begins_house.random_lights
 # begins_house.color_loop
-# begins_house.super_crazy
+begins_house.super_crazy
